@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IxMin</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="shortcut icon"
+      href="/assets/favicon-32x32.png"
+      type="image/x-icon"
+    />
+    <style type="text/tailwindcss">
+      * {
+        font-family: 'Pretendard', sans-serif;
+      }
+
+      .secondary {
+        color: #004c86 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="text-gray-600 body-font border-b border-gray-100">
+      <div
+        class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center"
+      >
+        <a
+          class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
+        >
+          <!-- hanyang university logo -->
+          <img
+            class="w-12 h-12 text-white rounded-full"
+            src="/assets/HYU_logo_singlecolor_png.png"
+            alt="logo"
+            loading="lazy"
+          />
+          <span class="ml-3 text-xl">
+            <span class="secondary text-2xl font-bold">IxMin</span>
+          </span>
+        </a>
+        <nav
+          class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center"
+        >
+          <a class="mr-5 hover:text-gray-900" href="/lab">Home</a>
+          <a class="mr-5 hover:text-gray-900" href="/lab/members">Members</a>
+          <a class="mr-5 hover:text-gray-900" href="/lab/contact">Contact</a>
+        </nav>
+        <a
+          href="https://github.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center bg-gray-100 border-0 py-2 px-4 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
+        >
+          <span> GitHub </span>
+
+          <svg
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            class="w-4 h-4 ml-1"
+            viewBox="0 0 24 24"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- ==================== Hero ==================== -->
+    <section id="hero" class="body-font">
+      <div
+        class="container mx-auto flex px-5 py-24 md:py-32 items-center justify-center"
+      >
+        <div class="w-full max-w-4xl text-center">
+          <p
+            class="text-sm md:text-base font-medium tracking-widest uppercase secondary mb-5"
+          >
+            IxMin
+          </p>
+
+          <h1
+            class="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight"
+          >
+            Human-centered technology,
+            <br />
+            designed around people.
+          </h1>
+
+          <p
+            class="mt-8 text-lg md:text-xl text-gray-500 leading-relaxed max-w-2xl mx-auto"
+          >
+            Exploring the intersection of
+            <span class="text-gray-900 font-medium">AI</span>,
+            <span class="text-gray-900 font-medium">interaction</span>, and
+            <span class="text-gray-900 font-medium">human experience</span>.
+          </p>
+
+          <div class="mt-10 flex flex-wrap justify-center gap-3">
+            <a
+              href="#research"
+              class="inline-flex items-center px-6 py-3 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition"
+            >
+              Explore Research
+            </a>
+
+            <a
+              href="https://github.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center px-6 py-3 rounded-lg bg-gray-100 text-gray-900 hover:bg-gray-200 transition"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== About ==================== -->
+    <section id="about" class="body-font border-t border-gray-100">
+      <div class="container mx-auto px-5 py-20 md:py-24">
+        <div class="max-w-3xl">
+          <p
+            class="text-sm font-semibold tracking-widest uppercase secondary mb-3"
+          >
+            About
+          </p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+            About IxMin
+          </h2>
+
+          <p class="mt-6 text-lg text-gray-600 leading-relaxed">
+            IxMin is a research-oriented space exploring the intersection of
+            Human–Computer Interaction, Artificial Intelligence, and Interactive
+            Systems.
+          </p>
+
+          <p class="mt-4 text-lg text-gray-600 leading-relaxed">
+            We focus on understanding how people interact with intelligent
+            systems and how technology can become more adaptive, expressive, and
+            human-centered.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Research ==================== -->
+    <section id="research" class="body-font bg-gray-50">
+      <div class="container mx-auto px-5 py-20 md:py-24">
+        <div class="text-center mb-14">
+          <p
+            class="text-sm font-semibold tracking-widest uppercase secondary mb-3"
+          >
+            Research
+          </p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+            Research Areas
+          </h2>
+
+          <p class="mt-4 text-gray-500 max-w-2xl mx-auto">
+            Exploring technologies that connect intelligent systems with human
+            behavior, experience, and interaction.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Research Card -->
+          <div
+            class="bg-white rounded-xl p-7 border border-gray-100 hover:shadow-md transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-5"
+            >
+              <span class="text-lg font-bold secondary">01</span>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-900">
+              Human–Computer Interaction
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Designing interactive systems around human needs, behaviors, and
+              experiences.
+            </p>
+          </div>
+
+          <!-- Research Card -->
+          <div
+            class="bg-white rounded-xl p-7 border border-gray-100 hover:shadow-md transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-5"
+            >
+              <span class="text-lg font-bold secondary">02</span>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-900">
+              Affective Computing
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Understanding and responding to human emotions through multimodal
+              interaction.
+            </p>
+          </div>
+
+          <!-- Research Card -->
+          <div
+            class="bg-white rounded-xl p-7 border border-gray-100 hover:shadow-md transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-5"
+            >
+              <span class="text-lg font-bold secondary">03</span>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-900">
+              AI & Intelligent Agents
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Exploring AI systems that adapt to users, environments, and
+              individual contexts.
+            </p>
+          </div>
+
+          <!-- Research Card -->
+          <div
+            class="bg-white rounded-xl p-7 border border-gray-100 hover:shadow-md transition"
+          >
+            <div
+              class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-5"
+            >
+              <span class="text-lg font-bold secondary">04</span>
+            </div>
+
+            <h3 class="text-xl font-semibold text-gray-900">
+              Multimodal Interaction
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Combining visual, auditory, behavioral, and contextual information
+              for richer interaction.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Projects ==================== -->
+    <section id="projects" class="body-font">
+      <div class="container mx-auto px-5 py-20 md:py-24">
+        <div class="mb-14">
+          <p
+            class="text-sm font-semibold tracking-widest uppercase secondary mb-3"
+          >
+            Projects
+          </p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+            Selected Projects
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Project -->
+          <article
+            class="group border border-gray-200 rounded-xl p-7 hover:border-gray-300 hover:shadow-md transition"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-400"> Research </span>
+
+              <span class="text-gray-300 group-hover:text-gray-600 transition">
+                ↗
+              </span>
+            </div>
+
+            <h3 class="mt-8 text-xl font-semibold text-gray-900">
+              Adaptive Learning Systems
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              AI-based systems that adapt learning experiences to individual
+              users and their learning contexts.
+            </p>
+          </article>
+
+          <!-- Project -->
+          <article
+            class="group border border-gray-200 rounded-xl p-7 hover:border-gray-300 hover:shadow-md transition"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-400"> Research </span>
+
+              <span class="text-gray-300 group-hover:text-gray-600 transition">
+                ↗
+              </span>
+            </div>
+
+            <h3 class="mt-8 text-xl font-semibold text-gray-900">
+              Multimodal Emotion Recognition
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Computational approaches to understanding affective states from
+              multimodal human data.
+            </p>
+          </article>
+
+          <!-- Project -->
+          <article
+            class="group border border-gray-200 rounded-xl p-7 hover:border-gray-300 hover:shadow-md transition"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-400"> Prototype </span>
+
+              <span class="text-gray-300 group-hover:text-gray-600 transition">
+                ↗
+              </span>
+            </div>
+
+            <h3 class="mt-8 text-xl font-semibold text-gray-900">
+              Human–AI Interaction
+            </h3>
+
+            <p class="mt-4 text-gray-500 leading-relaxed">
+              Prototyping intelligent interfaces and agents designed around
+              human behavior and interaction.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA ==================== -->
+    <section id="contact" class="body-font border-t border-gray-100">
+      <div class="container mx-auto px-5 py-24">
+        <div
+          class="max-w-4xl mx-auto rounded-2xl bg-gray-50 px-8 py-14 md:px-16 text-center"
+        >
+          <p
+            class="text-sm font-semibold tracking-widest uppercase secondary mb-4"
+          >
+            Get in touch
+          </p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+            Let's build more human-centered technology.
+          </h2>
+
+          <p class="mt-5 text-gray-500 text-lg">
+            Interested in our research, projects, or collaboration?
+          </p>
+
+          <div class="mt-8 flex justify-center gap-3">
+            <a
+              href="/contact"
+              class="inline-flex items-center px-6 py-3 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition"
+            >
+              Contact
+            </a>
+
+            <a
+              href="https://github.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center px-6 py-3 rounded-lg bg-white border border-gray-200 text-gray-900 hover:bg-gray-100 transition"
+            >
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== Footer ==================== -->
+
+    <footer class="border-t border-gray-100">
+      <div
+        class="container mx-auto px-5 py-8 flex flex-col md:flex-row items-center justify-between"
+      >
+        <p class="text-sm text-gray-400">© 2026 IxMin. All rights reserved.</p>
+
+        <a
+          href="https://github.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-3 md:mt-0 text-sm secondary hover:underline"
+        >
+          GitHub ↗
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>
