@@ -23,10 +23,11 @@
         --text: #16181d;
         --text2: #5d6270;
         --outline: #e2e4ea;
-        --p1: #ffb3a7;
-        --p2: #ffe08a;
-        --p3: #a9e5c9;
-        --p4: #a9c4ff;
+        --p1: #f5c2ca;
+        --p2: #f5dac2;
+        --p3: #f5eec2;
+        --p4: #d7f5c2;
+        --p5: #c2f5dd;
         box-sizing: border-box;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -228,16 +229,31 @@
         color: var(--primary);
       }
 
+      .opacity-50 {
+        opacity: 0.5;
+      }
+
       /* thumbnails */
+      .mini i.cat {
+        display: grid;
+        place-items: center;
+        padding: 12%;
+        color: var(--text);
+      }
+      .mini i.cat svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
       .mini {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 4px;
         width: 128px;
       }
       .mini i {
         aspect-ratio: 1;
-        border-radius: 8px;
+        border-radius: 4px;
         background: var(--surface);
         border: 1.5px dashed var(--outline);
       }
@@ -252,6 +268,9 @@
       }
       .mini i.p4 {
         background: var(--p4);
+      }
+      .mini i.p5 {
+        background: var(--p5);
       }
       .mini i[class] {
         border: 0;
@@ -392,8 +411,8 @@
 
     <footer>
       <div class="wrap">
-        <span><strong>Playground</strong> · Play. Think. Enjoy.</span>
-        <span>© Playground · v1.0</span>
+        <span><strong>Playground</strong> · Play & Enjoy</span>
+        <span>© Playground · All rights reserved.</span>
       </div>
     </footer>
 
@@ -408,9 +427,9 @@
         {
           id: 'colordoku',
           title: '컬러도쿠',
-          description: '색과 논리로 격자를 채워 보세요.',
+          description: '색 영역마다 숨어있는 고양이를 찾는 논리 퍼즐',
           category: '논리 퍼즐',
-          route: '#',
+          route: '/playground/colordoku/',
           enabled: true,
           featured: true,
           thumb: 'colordoku',
@@ -418,9 +437,9 @@
         {
           id: 'baseball',
           title: '숫자야구',
-          description: '추리로 숨겨진 숫자를 찾아보세요.',
-          category: '숫자 퍼즐',
-          route: '#',
+          description: '컴퓨터와 숫자 야구 게임을 해보세요',
+          category: '논리 퍼즐',
+          route: '/playground/baseball/',
           enabled: true,
           featured: true,
           thumb: 'baseball',
@@ -429,33 +448,54 @@
         route:"https://...", enabled:true, featured:false, icon:"🎲" } */
       ];
 
+      const CAT =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"><path d="M4.6 11L5.4 5.2 10 7.8z"></path><path d="M19.4 11L18.6 5.2 14 7.8z"></path></g><ellipse cx="12" cy="14" rx="9.4" ry="7.4" fill="currentColor"></ellipse><circle cx="8.2" cy="13.6" r="1.4" fill="var(--bg)"></circle><circle cx="15.8" cy="13.6" r="1.4" fill="var(--bg)"></circle><path d="M10.9 15.2h2.2L12 16.3z" fill="var(--bg)" stroke="var(--bg)" stroke-width=".8" stroke-linejoin="round"></path><path d="M12 16.3v.8M12 17.1c-.7.8-1.7.8-2.2.2M12 17.1c.7.8 1.7.8 2.2.2" fill="none" stroke="var(--bg)" stroke-width=".8" stroke-linecap="round"></path><path d="M4.2 15.4L.8 14.6M4.2 17.3L.8 18.1M19.8 15.4L23.2 14.6M19.8 17.3L23.2 18.1" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"></path></svg>';
+
       const THUMBS = {
         colordoku: () => {
           const c = [
+            'p2',
+            'p1',
+            'p1',
+            'p1 cat',
+            'p1',
+            'p2 cat',
+            'p2',
+            'p1',
+            'p1',
             'p1',
             'p2',
-            '',
-            'p4',
-            '',
-            'p4',
+            'p2',
+            'p3 cat',
             'p1',
-            'p2',
-            'p2',
-            '',
-            'p4',
+            'p1',
+            'p5',
+            'p5',
             'p3',
             'p4',
+            'p4 cat',
+            'p5',
+            'p5 cat',
             'p3',
-            'p2',
-            '',
+            'p4',
+            'p4',
           ];
           return (
             '<div class="mini">' +
-            c.map(x => (x ? '<i class="' + x + '"></i>' : '<i></i>')).join('') +
+            c
+              .map(x =>
+                x.includes('cat')
+                  ? '<i class="' +
+                    x +
+                    '"><svg id="cat" viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"><path d="M4.6 11L5.4 5.2 10 7.8z"></path><path d="M19.4 11L18.6 5.2 14 7.8z"></path></g><ellipse cx="12" cy="14" rx="9.4" ry="7.4" fill="currentColor"></ellipse><circle cx="8.2" cy="13.6" r="1.4" fill="var(--bg)"></circle><circle cx="15.8" cy="13.6" r="1.4" fill="var(--bg)"></circle><path d="M10.9 15.2h2.2L12 16.3z" fill="var(--bg)" stroke="var(--bg)" stroke-width=".8" stroke-linejoin="round"></path><path d="M12 16.3v.8M12 17.1c-.7.8-1.7.8-2.2.2M12 17.1c.7.8 1.7.8 2.2.2" fill="none" stroke="var(--bg)" stroke-width=".8" stroke-linecap="round"></path><path d="M4.2 15.4L.8 14.6M4.2 17.3L.8 18.1M19.8 15.4L23.2 14.6M19.8 17.3L23.2 18.1" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"></path></svg></i>'
+                  : '<i class="' + x + '"></i>',
+              )
+              .join('') +
             '</div>'
           );
         },
-        baseball: () => '<div class="digits"><b>3</b><b>1</b><b>7</b></div>',
+        baseball: () =>
+          '<div class="digits"><b>3</b><b>1</b><b>7</b><b>5</b></div>',
       };
 
       /* ---------- storage (namespaced, versioned, fail-safe) ---------- */
@@ -562,13 +602,8 @@
             '">' +
             (ready ? '이용 가능' : '준비 중') +
             '</span>' +
-            (lp
-              ? '<span class="chip">마지막 플레이 ' + ago(lp) + '</span>'
-              : '') +
             '</div>' +
-            (ready
-              ? '<div class="cta">' + esc(g.title) + ' 시작하기</div>'
-              : ''),
+            (ready ? '<div class="cta">' + '시작하기</div>' : ''),
         );
         n.append(thumb, body);
         return n;
