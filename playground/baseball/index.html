@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>숫자야구</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #16506b;
+        --on-primary: #fff;
+        --primary-c: #cde8f6;
+        --on-primary-c: #001f2d;
+        --bg: #f3f6f7;
+        --surface: #fff;
+        --surface-2: #e9eff1;
+        --on-surface: #171c1f;
+        --on-var: #41484c;
+        --outline: #71787d;
+        --outline-v: #c1c8cc;
+        --strike: #1c6b3b;
+        --strike-c: #c5efd0;
+        --ball: #7a5200;
+        --ball-c: #ffdea6;
+        --error: #ba1a1a;
+        --error-c: #ffdad6;
+        --font: 'Noto Sans KR', system-ui, sans-serif;
+        --fd: 'Fredoka', 'Noto Sans KR', system-ui, sans-serif;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --primary: #8fcff0;
+          --on-primary: #00344a;
+          --primary-c: #00506b;
+          --on-primary-c: #cde8f6;
+          --bg: #101416;
+          --surface: #181c1e;
+          --surface-2: #252a2c;
+          --on-surface: #e0e3e5;
+          --on-var: #c1c8cc;
+          --outline: #8b9296;
+          --outline-v: #41484c;
+          --strike: #8bd6a0;
+          --strike-c: #00522a;
+          --ball: #f3bf5e;
+          --ball-c: #5c3d00;
+          --error: #ffb4ab;
+          --error-c: #93000a;
+        }
+      }
+      :root[data-theme='dark'] {
+        --primary: #8fcff0;
+        --on-primary: #00344a;
+        --primary-c: #00506b;
+        --on-primary-c: #cde8f6;
+        --bg: #101416;
+        --surface: #181c1e;
+        --surface-2: #252a2c;
+        --on-surface: #e0e3e5;
+        --on-var: #c1c8cc;
+        --outline: #8b9296;
+        --outline-v: #41484c;
+        --strike: #8bd6a0;
+        --strike-c: #00522a;
+        --ball: #f3bf5e;
+        --ball-c: #5c3d00;
+        --error: #ffb4ab;
+        --error-c: #93000a;
+      }
+      html {
+        height: 100%;
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--on-surface);
+        font: 400 16px/1.5 var(--font);
+        font-variant-numeric: tabular-nums;
+        -webkit-tap-highlight-color: transparent;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        border: 0;
+        background: none;
+      }
+      :focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+      }
+      .app {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 8px 16px 28px;
+      }
+      header.top {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 8px;
+        min-height: 56px;
+        padding: 0;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      header.top.hero {
+        display: block;
+        min-height: 0;
+        margin-bottom: 0;
+        padding-top: clamp(24px, 8vh, 72px);
+      }
+      .hero h1 {
+        font: 600 clamp(44px, 14vw, 64px)/1 var(--fd);
+        margin: 12px 0 4px;
+        letter-spacing: -0.5px;
+      }
+      .hero .sub {
+        font-size: 16px;
+        margin: 0 0 16px;
+      }
+      header.top > div {
+        grid-column: 2;
+      }
+      header.top .btn {
+        grid-column: 3;
+        justify-self: end;
+        min-height: 40px;
+        padding: 0 16px;
+        font-size: 0.875rem;
+      }
+      h1 {
+        font: 600 18px/1.2 var(--fd);
+        margin: 0;
+      }
+      .sub {
+        font-size: 13px;
+        color: var(--on-var);
+        margin: 2px 0 0;
+      }
+      .card {
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 16px;
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.12),
+          0 1px 3px 1px rgba(0, 0, 0, 0.06);
+      }
+      .btn {
+        min-height: 48px;
+        padding: 0 24px;
+        border-radius: 24px;
+        font-weight: 700;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition:
+          transform 0.12s,
+          background 0.15s;
+      }
+      .btn:active {
+        transform: scale(0.97);
+      }
+      .btn.fill {
+        background: var(--primary);
+        color: var(--on-primary);
+      }
+      .btn.tonal {
+        background: var(--primary-c);
+        color: var(--on-primary-c);
+      }
+      .btn.text {
+        color: var(--primary);
+      }
+      .btn[disabled] {
+        opacity: 0.38;
+        cursor: not-allowed;
+      }
+      .setup {
+        display: grid;
+        gap: 12px;
+      }
+      .acts {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .acts .btn {
+        flex: 1;
+      }
+      .setup h2,
+      .game h2 {
+        font: 600 22px var(--fd);
+        margin: 0 0 8px;
+      }
+      .rules {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+        text-align: left;
+        margin: 12px 0;
+      }
+      .rules td,
+      .rules th {
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--outline-v);
+        font-weight: 400;
+      }
+      .rules th {
+        font-weight: 500;
+        color: var(--on-var);
+      }
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+      .big {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-align: left;
+        width: 100%;
+        padding: 20px;
+        border-radius: 28px;
+        background: var(--surface-2);
+        transition:
+          transform 0.15s,
+          background 0.15s;
+      }
+      .big:hover {
+        transform: translateY(-1px);
+      }
+      .big b {
+        display: block;
+        font: 600 20px var(--fd);
+      }
+      .big small {
+        color: var(--on-var);
+        font-size: 14px;
+      }
+      .big .dot {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: var(--primary-c);
+        color: var(--on-primary-c);
+        display: grid;
+        place-items: center;
+        font: 600 20px var(--fd);
+        flex: none;
+      }
+      .big[aria-checked='true'] {
+        background: var(--primary-c);
+        color: var(--on-primary-c);
+      }
+      .big[aria-checked='true'] small {
+        color: inherit;
+      }
+      .big[aria-checked='true'] .dot {
+        background: var(--primary);
+        color: var(--on-primary);
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 56px;
+      }
+      .switch {
+        width: 52px;
+        height: 32px;
+        border-radius: 16px;
+        border: 2px solid var(--outline);
+        position: relative;
+        transition: background 0.2s;
+      }
+      .switch::after {
+        content: '';
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--outline);
+        transition: all 0.2s;
+      }
+      .switch[aria-checked='true'] {
+        background: var(--primary);
+        border-color: var(--primary);
+      }
+      .switch[aria-checked='true']::after {
+        left: 26px;
+        top: 4px;
+        width: 24px;
+        height: 24px;
+        background: var(--on-primary);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        text-align: center;
+      }
+      .stats b {
+        display: block;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .stats span {
+        font-size: 0.75rem;
+        color: var(--on-var);
+      }
+      .game {
+        display: grid;
+        gap: 12px;
+      }
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--on-var);
+        margin-bottom: 12px;
+      }
+      .slots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 4px 0 14px;
+      }
+      .slot {
+        width: clamp(48px, 16vw, 68px);
+        height: clamp(64px, 20vw, 88px);
+        border-radius: 16px;
+        border: 2px solid var(--outline-v);
+        background: var(--surface-2);
+        display: grid;
+        place-items: center;
+        font: 600 36px var(--fd);
+      }
+      .slot.on {
+        border-color: var(--primary);
+      }
+      .slot.fill {
+        background: var(--primary-c);
+        color: var(--on-primary-c);
+        border-color: transparent;
+      }
+      .slot.pop {
+        animation: pop 0.18s ease-out;
+      }
+      .slots.shake {
+        animation: shake 0.3s;
+      }
+      .slots.win .slot {
+        background: var(--strike-c);
+        color: var(--strike);
+        animation: pop 0.5s ease-out;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0.85);
+        }
+        60% {
+          transform: scale(1.08);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes shake {
+        25% {
+          transform: translateX(-6px);
+        }
+        75% {
+          transform: translateX(6px);
+        }
+      }
+      .pad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .key {
+        min-height: 56px;
+        border-radius: 20px;
+        background: var(--surface-2);
+        font: 600 24px var(--fd);
+        transition:
+          transform 0.1s,
+          background 0.15s;
+      }
+      .key:active {
+        transform: scale(0.94);
+        background: var(--primary-c);
+      }
+      .key.util {
+        font: 500 14px var(--font);
+        color: var(--on-var);
+      }
+      .key[disabled] {
+        opacity: 0.35;
+        cursor: not-allowed;
+        text-decoration: line-through;
+      }
+      .submit {
+        width: 100%;
+        margin-top: 12px;
+        min-height: 56px;
+      }
+      ol.list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+      .item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 16px;
+        background: var(--surface-2);
+      }
+      .item .n {
+        width: 2rem;
+        color: var(--on-var);
+        font-size: 13px;
+      }
+      .item .g {
+        font: 600 22px var(--fd);
+        letter-spacing: 0.12em;
+        flex: 1;
+      }
+      .chips {
+        display: flex;
+        gap: 6px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 8px;
+        font: 500 15px var(--fd);
+      }
+      .chip.s {
+        background: var(--strike-c);
+        color: var(--strike);
+      }
+      .chip.b {
+        background: var(--ball-c);
+        color: var(--ball);
+        border-radius: 16px;
+      }
+      .chip.zero {
+        opacity: 0.45;
+      }
+      .item.new {
+        animation: pop 0.3s ease-out;
+      }
+      .empty {
+        color: var(--on-var);
+        font-size: 0.9rem;
+        padding: 12px 4px;
+      }
+      .legend {
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+        color: var(--on-var);
+        margin-top: 12px;
+      }
+      .scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.42);
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        z-index: 20;
+      }
+      .dialog {
+        background: var(--surface);
+        border-radius: 28px;
+        padding: 24px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+      }
+      .dialog h2 {
+        margin: 0 0 8px;
+        font: 600 22px var(--fd);
+      }
+      .dialog .ans {
+        font: 600 40px var(--fd);
+        letter-spacing: 0.18em;
+        color: var(--strike);
+        margin: 12px 0;
+      }
+      .dialog .btns {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .snack {
+        position: fixed;
+        left: 50%;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        transform: translateX(-50%);
+        background: var(--on-surface);
+        color: var(--bg);
+        padding: 12px 18px;
+        border-radius: 14px;
+        font-size: 14px;
+        z-index: 30;
+        max-width: calc(100% - 32px);
+        animation: pop 0.2s;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+      .rl {
+        display: grid;
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .rl > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--on-var);
+      }
+      .chip.sm {
+        height: 24px;
+        min-width: 44px;
+        padding: 0 8px;
+        gap: 4px;
+        justify-content: center;
+        flex: none;
+        font-size: 13px;
+        line-height: 1;
+      }
+      /* 게임 화면: 이전 레이아웃 */
+      .app.gv {
+        max-width: 960px;
+        padding: 16px;
+      }
+      .gv header.top {
+        min-height: 0;
+        padding: 8px 4px 16px;
+        margin-bottom: 0;
+      }
+      .gv h1 {
+        font: 600 1.5rem/1.5 var(--font);
+        letter-spacing: -0.01em;
+      }
+      .gv .sub {
+        font-size: 0.875rem;
+      }
+      .gv .btn {
+        font-weight: 500;
+      }
+      .gv .card {
+        padding: 20px;
+      }
+      .gv .game {
+        gap: 16px;
+      }
+      @media (min-width: 760px) {
+        .gv .game {
+          grid-template-columns: 1fr 1fr;
+          align-items: start;
+        }
+        .gv .hist {
+          position: sticky;
+          top: 16px;
+        }
+      }
+      .gv .game h2 {
+        font: 500 1rem var(--font);
+        margin: 0 0 12px;
+      }
+      .gv .meta {
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+      }
+      .gv .slots {
+        gap: 10px;
+        margin: 8px 0 20px;
+      }
+      .gv .slot {
+        font: 600 2.25rem var(--font);
+      }
+      .gv .pad {
+        gap: 10px;
+      }
+      .gv .key {
+        font: 500 1.5rem var(--font);
+      }
+      .gv .key.util {
+        font: 500 1rem var(--font);
+      }
+      .gv .item {
+        padding: 10px 14px;
+      }
+      .gv .item .n {
+        font-size: 0.875rem;
+      }
+      .gv .item .g {
+        font: 600 1.375rem var(--font);
+        letter-spacing: 0.12em;
+      }
+      .gv .chip {
+        font: 500 0.875rem var(--font);
+      }
+      .gv .legend {
+        font-size: 0.8125rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+    <div id="layer"></div>
+    <script>
+      /* ---------- Core logic (UI-independent) ---------- */
+      const Logic = {
+        generateAnswer(n, dup) {
+          const out = [];
+          while (out.length < n) {
+            const d = Math.floor(Math.random() * 10);
+            if (out.length === 0 && d === 0) continue;
+            if (!dup && out.includes(String(d))) continue;
+            out.push(String(d));
+          }
+          return out.join('');
+        },
+        evaluateGuess(answer, guess) {
+          let strike = 0;
+          const ca = {},
+            cg = {};
+          for (let i = 0; i < answer.length; i++) {
+            if (answer[i] === guess[i]) strike++;
+            else {
+              ca[answer[i]] = (ca[answer[i]] || 0) + 1;
+              cg[guess[i]] = (cg[guess[i]] || 0) + 1;
+            }
+          }
+          let ball = 0;
+          for (const k in cg) ball += Math.min(cg[k], ca[k] || 0);
+          return { strike, ball };
+        },
+        validateGuess(guess, n, dup) {
+          if (guess.length !== n)
+            return `${n}자리를 모두 입력하세요. (${guess.length}/${n})`;
+          if (guess[0] === '0') return '첫 번째 숫자는 0이 될 수 없습니다.';
+          if (!dup && new Set(guess).size !== guess.length)
+            return '중복 없는 숫자만 입력할 수 있습니다.';
+          return null;
+        },
+      };
+
+      /* ---------- Storage ---------- */
+      const Store = {
+        get(k, d) {
+          try {
+            const v = localStorage.getItem(k);
+            return v ? JSON.parse(v) : d;
+          } catch (e) {
+            return d;
+          }
+        },
+        set(k, v) {
+          try {
+            localStorage.setItem(k, JSON.stringify(v));
+          } catch (e) {}
+        },
+      };
+      const cfg = Object.assign({ digits: 3 }, Store.get('nb-cfg', {}));
+      cfg.dup = false; /* 항상 중복 없는 숫자 */
+
+      /* ---------- State ---------- */
+      let S = {
+        screen: 'setup',
+        answer: '',
+        input: '',
+        history: [],
+        won: false,
+        fresh: -1,
+        shake: false,
+      };
+      const $ = s => document.querySelector(s);
+      const app = $('#app'),
+        layer = $('#layer');
+      const label = { 3: 'EASY', 4: 'NORMAL', 5: 'HARD' };
+
+      function start() {
+        Store.set('nb-cfg', cfg);
+        S = {
+          screen: 'game',
+          answer: Logic.generateAnswer(cfg.digits, cfg.dup),
+          input: '',
+          history: [],
+          won: false,
+          fresh: -1,
+          shake: false,
+        };
+        render();
+      }
+      function press(d) {
+        if (S.won || S.input.length >= cfg.digits) return;
+        if (!cfg.dup && S.input.includes(d))
+          return toast(`${d}은(는) 이미 입력했습니다.`);
+        if (S.input.length === 0 && d === '0')
+          return toast('첫 번째 숫자는 0이 될 수 없습니다.');
+        S.input += d;
+        S.fresh = S.input.length - 1;
+        render();
+      }
+      function back() {
+        if (S.won) return;
+        S.input = S.input.slice(0, -1);
+        S.fresh = -1;
+        render();
+      }
+      function clearIn() {
+        S.input = '';
+        S.fresh = -1;
+        render();
+      }
+      function submit() {
+        if (S.won) return;
+        const err = Logic.validateGuess(S.input, cfg.digits, cfg.dup);
+        if (err) {
+          S.shake = true;
+          render();
+          S.shake = false;
+          return toast(err);
+        }
+        const r = Logic.evaluateGuess(S.answer, S.input);
+        S.history.unshift({ guess: S.input, ...r });
+        S.input = '';
+        S.fresh = -1;
+        if (r.strike === cfg.digits) {
+          S.won = true;
+          render();
+          setTimeout(showWin, 900);
+        } else render();
+      }
+      let tt;
+      function toast(msg) {
+        const el = document.createElement('div');
+        el.className = 'snack';
+        el.setAttribute('role', 'status');
+        el.textContent = msg;
+        const old = $('.snack');
+        if (old) old.remove();
+        document.body.appendChild(el);
+        clearTimeout(tt);
+        tt = setTimeout(() => el.remove(), 2200);
+      }
+      function showWin() {
+        if (!S.won || S.screen !== 'game') return;
+        layer.innerHTML = `<div class="scrim" id="scrim" data-lock><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="wt">
+    <h2 id="wt">정답입니다!</h2><div class="sub">${S.history.length}번 만에 맞혔어요</div>
+    <div class="ans">${S.answer}</div>
+    <div class="sub">난이도 ${label[cfg.digits]} (${cfg.digits}자리)</div>
+    <p style="margin:20px 0 0;font-weight:500">한 판 더 하시겠어요?</p>
+    <div class="btns"><button class="btn tonal" id="home">홈으로</button><button class="btn fill" id="again">다시 하기</button></div></div></div>`;
+        $('#again').onclick = () => {
+          layer.innerHTML = '';
+          start();
+        };
+        $('#home').onclick = () => {
+          layer.innerHTML = '';
+          S.screen = 'setup';
+          render();
+        };
+        $('#again').focus();
+      }
+      function showRules() {
+        layer.innerHTML = `<div class="scrim"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="rt" style="max-width:440px;text-align:left;max-height:90vh;overflow:auto">
+    <h2 id="rt" style="text-align:center">게임 규칙</h2>
+    <p class="sub">컴퓨터가 서로 다른 N자리 숫자를 만들면 그 숫자를 맞히세요. 제출할 때마다 <b>xS yB</b>로 힌트를 알려줍니다.</p>
+    <div class="rl"><div><span class="chip s sm">■ S</span><span>숫자와 위치가 모두 맞음</span></div><div><span class="chip b sm">● B</span><span>숫자는 맞지만 위치가 다름</span></div></div>
+    <table class="rules"><tr><th>정답 1357</th><th>결과</th></tr>
+     <tr><td>7096</td><td>0S 1B</td></tr><tr><td>2468</td><td>0S 0B</td></tr><tr><td>3457</td><td>2S 1B</td></tr><tr><td>7531</td><td>0S 4B</td></tr><tr><td>1357</td><td>4S 0B</td></tr></table>
+    <p class="sub">EASY 3자리 · NORMAL 4자리 · HARD 5자리</p>
+    <div class="btns"><button class="btn fill" id="ok">확인</button></div></div></div>`;
+        $('#ok').onclick = closeDialog;
+        $('#ok').focus();
+      }
+      function closeDialog() {
+        if (layer.querySelector('[data-lock]')) return;
+        layer.innerHTML = '';
+      }
+
+      /* ---------- Views ---------- */
+      function setupView() {
+        return `<header class="top hero"><div><h1>숫자야구</h1><p class="sub">컴퓨터와 숫자 야구 게임을 해보세요!<br>난이도를 선택하고 도전하세요.</p></div></header>
+  <main class="setup">
+   <div class="stack" role="radiogroup" aria-label="게임 난이도">
+    ${[3, 4, 5].map(n => `<button class="big" role="radio" aria-checked="${cfg.digits === n}" data-d="${n}"><span class="dot">${n}</span><span><b>${label[n]}</b><small>${n}자리 · 서로 다른 숫자</small></span></button>`).join('')}
+   </div>
+   <div class="acts"><button class="btn tonal" id="rules">게임 규칙</button><button class="btn fill" id="go">게임 시작</button></div>
+  </main>`;
+      }
+      function gameView() {
+        const n = cfg.digits;
+        const slots = Array.from({ length: n }, (_, i) => {
+          const c = S.input[i];
+          return `<div class="slot ${c ? 'fill' : ''} ${i === S.input.length && !S.won ? 'on' : ''} ${S.fresh === i ? 'pop' : ''}">${c || ''}</div>`;
+        }).join('');
+        const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+          .concat(['clear', '0', 'back'])
+          .map(k => {
+            if (k === 'clear')
+              return `<button class="key util" data-k="clear" aria-label="전체 지우기">전체삭제</button>`;
+            if (k === 'back')
+              return `<button class="key util" data-k="back" aria-label="한 자리 지우기">⌫</button>`;
+            const used = !cfg.dup && S.input.includes(k);
+            return `<button class="key" data-k="${k}" ${used || S.won ? 'disabled' : ''} aria-label="${k}">${k}</button>`;
+          })
+          .join('');
+        const hist = S.history.length
+          ? `<ol class="list" aria-label="추측 기록">${S.history
+              .map(
+                (h, i) => `
+    <li class="item ${i === 0 ? 'new' : ''}"><span class="n">${S.history.length - i}회</span><span class="g">${h.guess}</span>
+    <span class="chips"><span class="chip s ${h.strike ? '' : 'zero'}">■ ${h.strike}S</span><span class="chip b ${h.ball ? '' : 'zero'}">● ${h.ball}B</span></span></li>`,
+              )
+              .join('')}</ol>`
+          : `<p class="empty">아직 추측이 없어요. 첫 ${n}자리 숫자를 입력해 보세요.</p>`;
+        return `<header class="top"><div><h1>난이도: ${label[n]}</h1><p class="sub">${n}자리 · 서로 다른 숫자</p></div>
+    <button class="btn tonal" id="quit">다시하기</button></header>
+  <main class="game">
+   <section class="card"><h2>입력</h2><div class="meta"><span>시도 ${S.history.length}회</span><span>${S.won ? '정답: ' + S.answer : '첫 자리는 1~9'}</span></div>
+    <div class="slots ${S.shake ? 'shake' : ''} ${S.won ? 'win' : ''}" aria-live="polite" aria-label="입력한 숫자 ${S.input || '없음'}">${slots}</div>
+    <div class="pad">${keys}</div>
+    <button class="btn fill submit" id="submit" ${S.won ? 'disabled' : ''}>제출</button></section>
+   <section class="card hist"><h2>결과</h2>${hist}
+    <div class="legend"><span><b>■ S</b> 숫자·위치 일치</span><span><b>● B</b> 숫자만 일치</span></div></section>
+  </main>`;
+      }
+      function render() {
+        app.className = 'app' + (S.screen === 'game' ? ' gv' : '');
+        app.innerHTML = S.screen === 'setup' ? setupView() : gameView();
+        if (S.screen === 'setup') {
+          app.querySelectorAll('[data-d]').forEach(
+            b =>
+              (b.onclick = () => {
+                cfg.digits = +b.dataset.d;
+                render();
+              }),
+          );
+          $('#rules').onclick = showRules;
+          $('#go').onclick = start;
+        } else {
+          app.querySelectorAll('[data-k]').forEach(
+            b =>
+              (b.onclick = () => {
+                const k = b.dataset.k;
+                k === 'clear' ? clearIn() : k === 'back' ? back() : press(k);
+              }),
+          );
+          $('#submit').onclick = submit;
+          $('#quit').onclick = () => {
+            S.screen = 'setup';
+            render();
+          };
+        }
+      }
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && layer.firstChild) return closeDialog();
+        if (S.screen !== 'game' || e.metaKey || e.ctrlKey) return;
+        if (layer.firstChild) {
+          if (e.key === 'Escape') closeDialog();
+          return;
+        }
+        if (/^[0-9]$/.test(e.key)) press(e.key);
+        else if (e.key === 'Backspace') back();
+        else if (e.key === 'Enter') {
+          if (
+            document.activeElement &&
+            document.activeElement.tagName === 'BUTTON' &&
+            document.activeElement.dataset.k
+          )
+            return;
+          submit();
+        } else if (e.key === 'Escape') clearIn();
+      });
+      render();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Playground</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fbfbfd;
+        --surface: #ffffff;
+        --variant: #f2f3f7;
+        --primary: #3a4bff;
+        --on-primary: #fff;
+        --text: #16181d;
+        --text2: #5d6270;
+        --outline: #e2e4ea;
+        --p1: #ffb3a7;
+        --p2: #ffe08a;
+        --p3: #a9e5c9;
+        --p4: #a9c4ff;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #101218;
+          --surface: #171a22;
+          --variant: #1e222c;
+          --primary: #8f9bff;
+          --on-primary: #101218;
+          --text: #eceef4;
+          --text2: #a1a7b8;
+          --outline: #2a2f3b;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme='dark'] {
+        --bg: #101218;
+        --surface: #171a22;
+        --variant: #1e222c;
+        --primary: #8f9bff;
+        --on-primary: #101218;
+        --text: #eceef4;
+        --text2: #a1a7b8;
+        --outline: #2a2f3b;
+        color-scheme: dark;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          400 16px/1.6 Inter,
+          'Noto Sans KR',
+          system-ui,
+          -apple-system,
+          'Apple SD Gothic Neo',
+          'Malgun Gothic',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      :focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 8px;
+      }
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* hero */
+      .hero {
+        padding: clamp(56px, 12vw, 112px) 0 clamp(40px, 8vw, 72px);
+      }
+      h1 {
+        margin: 0;
+        font-weight: 700;
+        font-size: clamp(38px, 8.5vw, 72px);
+        line-height: 1.15;
+        letter-spacing: -0.035em;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 32px;
+      }
+      .btn {
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 22px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-size: 16px;
+        border: 1px solid var(--outline);
+        background: var(--surface);
+        transition:
+          transform 0.12s,
+          background 0.12s;
+      }
+      .btn.primary {
+        background: var(--primary);
+        color: var(--on-primary);
+        border-color: var(--primary);
+      }
+      .btn:active,
+      .card:active {
+        transform: scale(0.98);
+      }
+
+      /* sections */
+      section {
+        padding: 0 0 clamp(40px, 7vw, 64px);
+      }
+      h2 {
+        margin: 0 0 20px;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+        gap: 16px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border: 1px solid var(--outline);
+        border-radius: 20px;
+        overflow: hidden;
+        transition:
+          border-color 0.15s,
+          transform 0.12s;
+      }
+      a.card:hover {
+        border-color: var(--text2);
+      }
+      .card.off {
+        opacity: 0.7;
+      }
+      .thumb {
+        height: 176px;
+        background: var(--variant);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+      }
+      .body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .desc {
+        margin: 0;
+        color: var(--text2);
+        font-size: 15px;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--text2);
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--outline);
+        border-radius: 999px;
+        padding: 2px 10px;
+        line-height: 1.5;
+      }
+      .chip.ok::before,
+      .chip.no::before {
+        content: '';
+        flex: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .chip.ok::before {
+        background: #2e9e6e;
+      }
+      .chip.no::before {
+        border: 1.5px solid var(--text2);
+      }
+      .cta {
+        margin-top: 14px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      /* thumbnails */
+      .mini {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        width: 128px;
+      }
+      .mini i {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1.5px dashed var(--outline);
+      }
+      .mini i.p1 {
+        background: var(--p1);
+      }
+      .mini i.p2 {
+        background: var(--p2);
+      }
+      .mini i.p3 {
+        background: var(--p3);
+      }
+      .mini i.p4 {
+        background: var(--p4);
+      }
+      .mini i[class] {
+        border: 0;
+      }
+      .digits {
+        display: flex;
+        gap: 10px;
+      }
+      .digits b {
+        width: 52px;
+        height: 64px;
+        border-radius: 12px;
+        background: var(--surface);
+        border: 1px solid var(--outline);
+        display: grid;
+        place-items: center;
+        font:
+          600 28px Inter,
+          sans-serif;
+      }
+
+      /* collection list */
+      .list {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--outline);
+        border-radius: 20px;
+        background: var(--surface);
+        overflow: hidden;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 20px;
+        min-height: 64px;
+      }
+      .row + .row {
+        border-top: 1px solid var(--outline);
+      }
+      .row .t {
+        font-weight: 600;
+      }
+      .row .c {
+        margin-left: auto;
+        color: var(--text2);
+        font-size: 14px;
+      }
+
+      /* activity */
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .stat {
+        flex: 1 1 140px;
+        background: var(--surface);
+        border: 1px solid var(--outline);
+        border-radius: 16px;
+        padding: 16px 20px;
+      }
+      .stat b {
+        display: block;
+        font-size: 30px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      .stat span {
+        color: var(--text2);
+        font-size: 14px;
+      }
+      .empty {
+        background: var(--variant);
+        border-radius: 16px;
+        padding: 20px;
+        color: var(--text2);
+      }
+
+      footer {
+        border-top: 1px solid var(--outline);
+        padding: 28px 0 40px;
+        color: var(--text2);
+        font-size: 14px;
+      }
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        justify-content: space-between;
+      }
+      footer strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+      #notice {
+        display: none;
+        background: var(--variant);
+        padding: 10px 20px;
+        font-size: 14px;
+        text-align: center;
+        color: var(--text2);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="notice" role="status">
+      저장소를 사용할 수 없어요. 일부 게임 기록이 저장되지 않을 수 있어요.
+    </div>
+
+    <main id="top">
+      <div class="wrap">
+        <div class="hero">
+          <h1>오늘은 무엇을<br />해볼까?</h1>
+          <div class="actions">
+            <a class="btn primary" href="#games">게임 둘러보기</a>
+          </div>
+        </div>
+
+        <section id="games" aria-labelledby="h-games">
+          <h2 id="h-games">추천 게임</h2>
+          <div class="grid" id="featured"></div>
+        </section>
+
+        <section id="collection" aria-labelledby="h-all" hidden>
+          <h2 id="h-all">전체 게임</h2>
+          <div class="list" id="all"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span><strong>Playground</strong> · Play. Think. Enjoy.</span>
+        <span>© Playground · v1.0</span>
+      </div>
+    </footer>
+
+    <script>
+      /* =========================================================
+   GAME REGISTRY — 새 게임은 이 배열에 항목만 추가하면 됩니다.
+   route : 게임 주소 (비어 있거나 "#"이면 '준비 중'으로 표시)
+   enabled / featured : 노출 여부 / 추천 영역 여부
+   thumb : 미리보기 종류 (THUMBS의 키). 없으면 icon 사용
+   ========================================================= */
+      const GAMES = [
+        {
+          id: 'colordoku',
+          title: '컬러도쿠',
+          description: '색과 논리로 격자를 채워 보세요.',
+          category: '논리 퍼즐',
+          route: '#',
+          enabled: true,
+          featured: true,
+          thumb: 'colordoku',
+        },
+        {
+          id: 'baseball',
+          title: '숫자야구',
+          description: '추리로 숨겨진 숫자를 찾아보세요.',
+          category: '숫자 퍼즐',
+          route: '#',
+          enabled: true,
+          featured: true,
+          thumb: 'baseball',
+        },
+        /* , { id:"new-game", title:"새 게임", description:"설명", category:"단어 게임",
+        route:"https://...", enabled:true, featured:false, icon:"🎲" } */
+      ];
+
+      const THUMBS = {
+        colordoku: () => {
+          const c = [
+            'p1',
+            'p2',
+            '',
+            'p4',
+            '',
+            'p4',
+            'p1',
+            'p2',
+            'p2',
+            '',
+            'p4',
+            'p3',
+            'p4',
+            'p3',
+            'p2',
+            '',
+          ];
+          return (
+            '<div class="mini">' +
+            c.map(x => (x ? '<i class="' + x + '"></i>' : '<i></i>')).join('') +
+            '</div>'
+          );
+        },
+        baseball: () => '<div class="digits"><b>3</b><b>1</b><b>7</b></div>',
+      };
+
+      /* ---------- storage (namespaced, versioned, fail-safe) ---------- */
+      const KEY = {
+        activity: 'playground:activity',
+        launches: 'playground:launches',
+      };
+      let storageOK = true;
+      function readStore(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return fallback;
+          const env = JSON.parse(raw);
+          if (!env || typeof env.version !== 'number' || !('data' in env))
+            return fallback;
+          return env.data;
+        } catch (e) {
+          storageOK = false;
+          return fallback;
+        }
+      }
+      function writeStore(key, data) {
+        try {
+          localStorage.setItem(
+            key,
+            JSON.stringify({ version: 1, updatedAt: Date.now(), data }),
+          );
+        } catch (e) {
+          storageOK = false;
+        }
+      }
+
+      /* ---------- helpers ---------- */
+      const activity = (() => {
+        const a = readStore(KEY.activity, []);
+        return Array.isArray(a)
+          ? a.filter(x => x && typeof x.gameId === 'string')
+          : [];
+      })();
+      const launches = (() => {
+        const l = readStore(KEY.launches, {});
+        return l && typeof l === 'object' ? l : {};
+      })();
+      const byId = id => GAMES.find(g => g.id === id);
+      const isReady = g => g.enabled && g.route && g.route !== '#';
+
+      function lastPlayed(id) {
+        const a = activity.find(x => x.gameId === id);
+        const t = Math.max((a && a.lastPlayedAt) || 0, launches[id] || 0);
+        return t || 0;
+      }
+      function ago(ts) {
+        const d = Math.floor(
+          (new Date().setHours(0, 0, 0, 0) -
+            new Date(ts).setHours(0, 0, 0, 0)) /
+            864e5,
+        );
+        return d <= 0 ? '오늘' : d === 1 ? '어제' : d + '일 전';
+      }
+      function el(tag, cls, html) {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (html != null) n.innerHTML = html;
+        return n;
+      }
+      const esc = s =>
+        String(s).replace(
+          /[&<>"]/g,
+          c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
+        );
+
+      /* ---------- game card ---------- */
+      function card(g) {
+        const ready = isReady(g);
+        const n = el(ready ? 'a' : 'div', 'card' + (ready ? '' : ' off'));
+        if (ready) {
+          n.href = g.route;
+          n.addEventListener('click', () => {
+            launches[g.id] = Date.now();
+            writeStore(KEY.launches, launches);
+          });
+        } else n.setAttribute('aria-disabled', 'true');
+
+        const thumb = el(
+          'div',
+          'thumb',
+          THUMBS[g.thumb] ? THUMBS[g.thumb]() : esc(g.icon || '🎮'),
+        );
+        thumb.setAttribute('aria-hidden', 'true');
+        const lp = lastPlayed(g.id);
+        const body = el(
+          'div',
+          'body',
+          '<h3>' +
+            esc(g.title) +
+            '</h3><p class="desc">' +
+            esc(g.description) +
+            '</p>' +
+            '<div class="meta"><span class="chip">' +
+            esc(g.category) +
+            '</span>' +
+            '<span class="chip ' +
+            (ready ? 'ok' : 'no') +
+            '">' +
+            (ready ? '이용 가능' : '준비 중') +
+            '</span>' +
+            (lp
+              ? '<span class="chip">마지막 플레이 ' + ago(lp) + '</span>'
+              : '') +
+            '</div>' +
+            (ready
+              ? '<div class="cta">' + esc(g.title) + ' 시작하기</div>'
+              : ''),
+        );
+        n.append(thumb, body);
+        return n;
+      }
+
+      /* ---------- render: games ---------- */
+      const visible = GAMES.filter(g => g.enabled);
+      const featured = visible.filter(g => g.featured);
+      const rest = visible.filter(g => !g.featured);
+      const fEl = document.getElementById('featured');
+      if (featured.length) featured.forEach(g => fEl.appendChild(card(g)));
+      else if (!visible.length)
+        fEl.appendChild(
+          el('div', 'empty', '지금은 이용할 수 있는 게임이 없어요.'),
+        );
+      if (rest.length) {
+        document.getElementById('collection').hidden = false;
+        const list = document.getElementById('all');
+        rest.forEach(g => {
+          const ready = isReady(g);
+          const r = el(
+            ready ? 'a' : 'div',
+            'row',
+            '<span class="t">' +
+              esc(g.title) +
+              '</span><span class="c">' +
+              esc(g.category) +
+              '</span>',
+          );
+          if (ready) r.href = g.route;
+          list.appendChild(r);
+        });
+      }
+
+      if (!storageOK) document.getElementById('notice').style.display = 'block';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1567 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#fcf8ff" />
+    <title>Colordoku</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+    />
+    <style>
+      :root {
+        --bg: #fcf8ff;
+        --sf: #f3effa;
+        --sf2: #e8e2f4;
+        --on: #1c1a27;
+        --on2: #5d5a70;
+        --pr: #4647c9;
+        --onpr: #fff;
+        --prc: #e1e0ff;
+        --onprc: #0c0a6b;
+        --er: #ba1a1a;
+        --erc: #ffdad6;
+        --ink: #2b2845;
+        --ol: #cbc5da;
+        --rs: 72%;
+        --rl: 86%;
+        --ff: 'Noto Sans KR', system-ui, sans-serif;
+        --fd: 'Fredoka', 'Noto Sans KR', system-ui, sans-serif;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #141320;
+          --sf: #1f1d2e;
+          --sf2: #2a2840;
+          --on: #e6e1f2;
+          --on2: #aaa5be;
+          --pr: #bfc0ff;
+          --onpr: #10106e;
+          --prc: #2f3099;
+          --onprc: #e1e0ff;
+          --er: #ffb4ab;
+          --erc: #5c1a16;
+          --ink: #f1edff;
+          --ol: #484560;
+          --rs: 34%;
+          --rl: 31%;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme='dark'] {
+        --bg: #141320;
+        --sf: #1f1d2e;
+        --sf2: #2a2840;
+        --on: #e6e1f2;
+        --on2: #aaa5be;
+        --pr: #bfc0ff;
+        --onpr: #10106e;
+        --prc: #2f3099;
+        --onprc: #e1e0ff;
+        --er: #ffb4ab;
+        --erc: #5c1a16;
+        --ink: #f1edff;
+        --ol: #484560;
+        --rs: 34%;
+        --rl: 31%;
+        color-scheme: dark;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--on);
+        font: 400 16px/1.5 var(--ff);
+        min-height: 100dvh;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        border: 0;
+        background: none;
+      }
+      button:focus-visible {
+        outline: 3px solid var(--pr);
+        outline-offset: 2px;
+      }
+      #app {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: 8px 16px 28px;
+      }
+      svg.i {
+        width: 24px;
+        height: 24px;
+        fill: currentColor;
+        flex: none;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 56px;
+      }
+      .bar .ti {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+      }
+      .bar .ti b {
+        font: 600 18px var(--fd);
+      }
+      .bar .ti span {
+        font-size: 13px;
+        color: var(--on2);
+      }
+      .ib {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        transition: background 0.15s;
+      }
+      .ib:hover {
+        background: var(--sf2);
+      }
+      .fb,
+      .tb,
+      .tonal {
+        height: 48px;
+        padding: 0 24px;
+        border-radius: 24px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .fb {
+        background: var(--pr);
+        color: var(--onpr);
+        box-shadow:
+          0 1px 3px #0003,
+          0 4px 10px #0002;
+      }
+      .tonal {
+        background: var(--prc);
+        color: var(--onprc);
+      }
+      .tb {
+        color: var(--pr);
+      }
+      .fb:active,
+      .tonal:active {
+        transform: scale(0.97);
+      }
+      .hero h1 {
+        font: 600 clamp(44px, 14vw, 64px)/1 var(--fd);
+        margin: 12px 0 4px;
+        letter-spacing: -0.5px;
+      }
+      .hero p {
+        margin: 0 0 16px;
+        color: var(--on2);
+      }
+      .card {
+        background: var(--sf);
+        border-radius: 28px;
+        padding: 16px;
+      }
+      .mini {
+        width: min(220px, 62%);
+        margin: 16px auto 20px;
+        display: block;
+        pointer-events: none;
+      }
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+      .big {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-align: left;
+        width: 100%;
+        padding: 20px;
+        border-radius: 28px;
+        background: var(--sf2);
+        transition: transform 0.15s;
+      }
+      .big:hover {
+        transform: translateY(-1px);
+      }
+      .big b {
+        display: block;
+        font: 600 20px var(--fd);
+      }
+      .big small {
+        color: var(--on2);
+        font-size: 14px;
+      }
+      .big .dot {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: var(--prc);
+        color: var(--onprc);
+        display: grid;
+        place-items: center;
+        font: 600 20px var(--fd);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      h2 {
+        font: 600 22px var(--fd);
+        margin: 20px 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+        gap: 10px;
+      }
+      .st {
+        height: 84px;
+        border-radius: 20px;
+        background: var(--sf2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font: 600 20px var(--fd);
+      }
+      .st small {
+        font: 400 12px var(--ff);
+        color: var(--on2);
+      }
+      .st.done {
+        background: var(--prc);
+        color: var(--onprc);
+      }
+      .st.done small {
+        color: inherit;
+      }
+      .st[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .seg {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .seg button {
+        height: 40px;
+        padding: 0 16px;
+        border-radius: 12px;
+        border: 1px solid var(--ol);
+        font-weight: 500;
+      }
+      .seg button[aria-pressed='true'] {
+        background: var(--prc);
+        color: var(--onprc);
+        border-color: transparent;
+        font-weight: 700;
+      }
+      .chips {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin: 4px 0 14px;
+      }
+      .chip {
+        background: var(--sf);
+        padding: 4px 14px;
+        border-radius: 16px;
+        font: 500 15px var(--fd);
+        min-width: 68px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+      .bd {
+        --n: 5;
+        display: grid;
+        grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+        grid-template-rows: repeat(var(--n), minmax(0, 1fr));
+        aspect-ratio: 1;
+        width: min(100%, max(260px, calc(100dvh - 340px)), 560px);
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow:
+          0 1px 3px #0003,
+          0 6px 16px #0002;
+        background: var(--on);
+      }
+      .cell {
+        --t: 0;
+        --r: 0;
+        --b: 0;
+        --l: 0;
+        padding: 0;
+        border-style: solid;
+        border-width: calc(1px + var(--t) * 2.5px) calc(1px + var(--r) * 2.5px)
+          calc(1px + var(--b) * 2.5px) calc(1px + var(--l) * 2.5px);
+        border-color: color-mix(
+            in srgb,
+            var(--on) calc(14% + var(--t) * 76%),
+            transparent
+          )
+          color-mix(in srgb, var(--on) calc(14% + var(--r) * 76%), transparent)
+          color-mix(in srgb, var(--on) calc(14% + var(--b) * 76%), transparent)
+          color-mix(in srgb, var(--on) calc(14% + var(--l) * 76%), transparent);
+        background: hsl(var(--h) var(--rs) var(--rl));
+        color: var(--ink);
+        display: grid;
+        place-items: center;
+        position: relative;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: filter 0.12s;
+      }
+      button.cell:active {
+        filter: brightness(0.93);
+      }
+      .cell {
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .cell svg {
+        width: 66%;
+        height: 66%;
+        max-width: 100%;
+        max-height: 100%;
+        pointer-events: none;
+      }
+      .cell .bird {
+        animation: pop 0.22s ease-out;
+      }
+      .cell.x svg {
+        width: 44%;
+        height: 44%;
+        opacity: 0.6;
+        stroke: currentColor;
+        stroke-width: 2.6;
+        stroke-linecap: round;
+        fill: none;
+      }
+      .cell.gh .ghost {
+        opacity: 0.5;
+      }
+      .cell.gh::before {
+        content: '';
+        position: absolute;
+        inset: 14%;
+        border: 2.5px dashed var(--pr);
+        border-radius: 50%;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      .cell.bad {
+        outline: 3px solid var(--er);
+        outline-offset: -3px;
+        z-index: 2;
+        animation: shake 0.3s;
+      }
+      .cell.bad::after {
+        content: '!';
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--er);
+        color: var(--bg);
+        font: 700 12px/16px var(--ff);
+        text-align: center;
+      }
+      .cell.cf {
+        outline: 3px dashed var(--er);
+        outline-offset: -3px;
+        z-index: 2;
+      }
+      .cell:focus-visible {
+        outline: 3px solid var(--pr);
+        outline-offset: -3px;
+        z-index: 3;
+      }
+      .paused {
+        aspect-ratio: 1;
+        width: min(100%, 420px);
+        margin: 0 auto;
+        display: grid;
+        place-content: center;
+        gap: 16px;
+        text-align: center;
+        background: var(--sf);
+        border-radius: 28px;
+      }
+      .tip {
+        text-align: center;
+        color: var(--on2);
+        font-size: 13px;
+        margin: 12px 0;
+      }
+      .ctl {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+      }
+      .ctl button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 72px;
+        padding: 10px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .ctl button:hover {
+        background: var(--sf2);
+      }
+      .ctl button[disabled] {
+        opacity: 0.38;
+        cursor: default;
+      }
+      .ctl .hb {
+        background: var(--prc);
+        color: var(--onprc);
+      }
+      .scrim {
+        position: fixed;
+        inset: 0;
+        background: #0006;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        z-index: 20;
+        animation: fade 0.15s;
+      }
+      .sheet {
+        background: var(--bg);
+        border-radius: 28px;
+        padding: 24px;
+        width: min(100%, 400px);
+        max-height: 88dvh;
+        overflow: auto;
+        box-shadow: 0 8px 32px #0005;
+      }
+      .sheet h2 {
+        margin-top: 0;
+      }
+      .sheet p {
+        margin: 8px 0;
+      }
+      .act {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+      .stat {
+        display: flex;
+        justify-content: space-around;
+        background: var(--sf);
+        border-radius: 20px;
+        padding: 14px;
+        margin: 12px 0;
+      }
+      .stat div {
+        text-align: center;
+        color: var(--on2);
+        font-size: 13px;
+      }
+      .stat b {
+        display: block;
+        font: 600 24px var(--fd);
+        color: var(--on);
+      }
+      #sb {
+        position: fixed;
+        left: 50%;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        transform: translate(-50%, 24px);
+        opacity: 0;
+        pointer-events: none;
+        background: var(--on);
+        color: var(--bg);
+        padding: 12px 18px;
+        border-radius: 14px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        max-width: calc(100% - 32px);
+        font-size: 14px;
+        transition: all 0.2s;
+        z-index: 30;
+      }
+      #sb.on {
+        transform: translate(-50%, 0);
+        opacity: 1;
+      }
+      .sw {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+      }
+      .help li {
+        margin: 8px 0;
+      }
+      .help ol {
+        padding-left: 20px;
+      }
+      .spin {
+        width: 36px;
+        height: 36px;
+        border: 4px solid var(--prc);
+        border-top-color: var(--pr);
+        border-radius: 50%;
+        animation: rot 0.8s linear infinite;
+        margin: auto;
+      }
+      .hl {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: var(--sf);
+        border-radius: 16px;
+        margin-top: 8px;
+        width: 100%;
+        text-align: left;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.4);
+          opacity: 0;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
+      @keyframes shake {
+        25% {
+          transform: translateX(-4px);
+        }
+        75% {
+          transform: translateX(4px);
+        }
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.35;
+        }
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+      }
+      @keyframes rot {
+        to {
+          transform: rotate(1turn);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      :root[data-motion='reduce'] * {
+        animation: none !important;
+        transition: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="dlg"></div>
+    <div id="sb" role="status" aria-live="polite"></div>
+    <script>
+      'use strict';
+      /* ========== ENGINE (React/DOM 비의존) ========== */
+      //ENGINE-START
+      const GEN = 'g1';
+      function hs(s) {
+        let h = 1779033703 ^ s.length;
+        for (let i = 0; i < s.length; i++) {
+          h = Math.imul(h ^ s.charCodeAt(i), 3432918353);
+          h = (h << 13) | (h >>> 19);
+        }
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return (h ^ (h >>> 16)) >>> 0;
+      }
+      function rng(seed) {
+        let a = hs(seed);
+        return () => {
+          a = (a + 0x6d2b79f5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      const shuffle = (a, R) => {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(R() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+      const adj = (a, b) =>
+        Math.max(Math.abs(a.row - b.row), Math.abs(a.col - b.col)) <= 1;
+      function makeBoard(grid) {
+        const n = grid.length,
+          regions = Array.from({ length: n }, (_, i) => ({
+            id: i,
+            colorToken: 'r' + i,
+            cells: [],
+          }));
+        const cells = grid.map((row, r) =>
+          row.map((g, c) => {
+            regions[g] && regions[g].cells.push({ row: r, col: c });
+            return { row: r, col: c, regionId: g };
+          }),
+        );
+        return { size: n, cells, regions };
+      }
+      function validateBoard(B) {
+        const n = B.size;
+        if (B.regions.length !== n || B.cells.length !== n) return false;
+        for (const g of B.regions) {
+          if (!g.cells.length) return false;
+          const seen = new Set([g.cells[0].row * n + g.cells[0].col]),
+            q = [g.cells[0]];
+          while (q.length) {
+            const p = q.pop();
+            for (const [dr, dc] of [
+              [1, 0],
+              [-1, 0],
+              [0, 1],
+              [0, -1],
+            ]) {
+              const r = p.row + dr,
+                c = p.col + dc;
+              if (
+                r >= 0 &&
+                c >= 0 &&
+                r < n &&
+                c < n &&
+                B.cells[r][c].regionId === g.id &&
+                !seen.has(r * n + c)
+              ) {
+                seen.add(r * n + c);
+                q.push({ row: r, col: c });
+              }
+            }
+          }
+          if (seen.size !== g.cells.length) return false;
+        }
+        return B.cells.every(row => row.length === n);
+      }
+      function validatePlacement(B, birds, c) {
+        const n = B.size;
+        if (!(c.row >= 0 && c.col >= 0 && c.row < n && c.col < n))
+          return { valid: false, conflicts: ['bounds'] };
+        const g = B.cells[c.row][c.col].regionId,
+          cf = new Set();
+        for (const b of birds) {
+          if (b.row === c.row) cf.add('row');
+          if (b.col === c.col) cf.add('column');
+          if (B.cells[b.row][b.col].regionId === g) cf.add('region');
+          if (adj(b, c)) cf.add('adjacency');
+        }
+        return { valid: !cf.size, conflicts: [...cf] };
+      }
+      function validateSolution(B, birds) {
+        if (birds.length !== B.size) return false;
+        const R = new Set(),
+          C = new Set(),
+          G = new Set();
+        for (const b of birds) {
+          R.add(b.row);
+          C.add(b.col);
+          G.add(B.cells[b.row][b.col].regionId);
+        }
+        if (R.size !== B.size || C.size !== B.size || G.size !== B.size)
+          return false;
+        return birds.every((a, i) =>
+          birds.every((b, j) => i >= j || !adj(a, b)),
+        );
+      }
+      function solvePuzzle(B, limit = 2) {
+        const t0 = performance.now(),
+          n = B.size,
+          sols = [],
+          cur = [];
+        let used = 0,
+          reg = 0,
+          nodes = 0;
+        (function go(r) {
+          if (r === n) {
+            sols.push(cur.map((c, i) => ({ row: i, col: c })));
+            return;
+          }
+          for (let c = 0; c < n; c++) {
+            nodes++;
+            if ((used >> c) & 1) continue;
+            if (r && Math.abs(c - cur[r - 1]) <= 1) continue;
+            const g = B.cells[r][c].regionId;
+            if ((reg >> g) & 1) continue;
+            used |= 1 << c;
+            reg |= 1 << g;
+            cur[r] = c;
+            go(r + 1);
+            used &= ~(1 << c);
+            reg &= ~(1 << g);
+            if (sols.length >= limit) return;
+          }
+        })(0);
+        return {
+          solutionCount: sols.length,
+          solutions: sols,
+          isUnique: sols.length === 1,
+          elapsedMs: performance.now() - t0,
+          nodesVisited: nodes,
+        };
+      }
+      function genSolution(n, R) {
+        const cur = [],
+          used = [];
+        const go = r => {
+          if (r === n) return true;
+          for (const c of shuffle([...Array(n).keys()], R)) {
+            if (used[c] || (r && Math.abs(c - cur[r - 1]) <= 1)) continue;
+            used[c] = 1;
+            cur[r] = c;
+            if (go(r + 1)) return true;
+            used[c] = 0;
+          }
+          return false;
+        };
+        return go(0) ? cur.map((c, i) => ({ row: i, col: c })) : null;
+      }
+      function growRegions(n, sol, R) {
+        const g = Array.from({ length: n }, () => Array(n).fill(-1)),
+          sz = Array(n).fill(1);
+        let left = n * n - n;
+        sol.forEach((p, i) => (g[p.row][p.col] = i));
+        while (left > 0) {
+          const opts = [];
+          for (let r = 0; r < n; r++)
+            for (let c = 0; c < n; c++)
+              if (g[r][c] < 0)
+                for (const [dr, dc] of [
+                  [1, 0],
+                  [-1, 0],
+                  [0, 1],
+                  [0, -1],
+                ]) {
+                  const q = g[r + dr]?.[c + dc];
+                  if (q >= 0) opts.push([r, c, q]);
+                }
+          const a = opts[Math.floor(R() * opts.length)],
+            b = opts[Math.floor(R() * opts.length)],
+            p = sz[a[2]] <= sz[b[2]] ? a : b;
+          g[p[0]][p[1]] = p[2];
+          sz[p[2]]++;
+          left--;
+        }
+        return g;
+      }
+      function repair(grid, sol, R) {
+        const n = grid.length;
+        for (let step = 0; step < 400; step++) {
+          const B = makeBoard(grid);
+          if (!validateBoard(B)) return null;
+          const s = solvePuzzle(B, 2);
+          if (s.solutionCount === 1)
+            return s.solutions[0].every((p, i) => p.col === sol[i].col)
+              ? B
+              : null;
+          const other = s.solutions.find(x =>
+            x.some((p, i) => p.col !== sol[i].col),
+          );
+          if (!other) return null;
+          const cand = shuffle(
+            other.filter((p, i) => p.col !== sol[i].col),
+            R,
+          );
+          let moved = false;
+          for (const q of cand) {
+            const g = grid[q.row][q.col];
+            for (const [dr, dc] of shuffle(
+              [
+                [1, 0],
+                [-1, 0],
+                [0, 1],
+                [0, -1],
+              ],
+              R,
+            )) {
+              const h = grid[q.row + dr]?.[q.col + dc];
+              if (h === undefined || h === g) continue;
+              grid[q.row][q.col] = h;
+              if (validateBoard(makeBoard(grid))) {
+                moved = true;
+                break;
+              }
+              grid[q.row][q.col] = g;
+            }
+            if (moved) break;
+          }
+          if (!moved) return null;
+        }
+        return null;
+      }
+      async function generate(size, seed, max = 300) {
+        const R = rng(`${GEN}|${size}|${seed}`);
+        for (let a = 0; a < max; a++) {
+          const sol = genSolution(size, R);
+          if (!sol) continue;
+          const B = repair(growRegions(size, sol, R), sol, R);
+          if (B) {
+            const s = solvePuzzle(B, 2);
+            if (
+              s.isUnique &&
+              s.solutions[0].every((p, i) => p.col === sol[i].col)
+            )
+              return {
+                id: `${GEN}-${size}-${seed}`,
+                board: B,
+                solution: sol,
+                size,
+                seed,
+                generatorVersion: GEN,
+              };
+          }
+          if (a % 5 === 4) await new Promise(r => setTimeout(r));
+        }
+        return null;
+      }
+      //ENGINE-END
+
+      /* ========== 설정 · 저장 ========== */
+      const LBL = {
+          5: '쉬움',
+          6: '보통',
+          7: '어려움',
+          8: '전문가',
+          9: '마스터',
+          10: '익스트림',
+        },
+        SIZES = [5, 6, 7, 8, 9, 10];
+      const STAGES = [5, 6, 7, 8].flatMap(n =>
+        [1, 2, 3].map(k => ({ size: n, seed: `stage-${n}-${k}` })),
+      );
+      const HUES = [350, 28, 52, 95, 152, 178, 203, 228, 266, 308],
+        KEY = 'colordoku:v1',
+        DT = 280,
+        VER = '1.0.0';
+      const defS = () => ({
+        v: 1,
+        settings: { theme: 'system', motion: 'system', haptics: true },
+        stages: {},
+        history: [],
+        active: null,
+      });
+      let S = (() => {
+        try {
+          const d = JSON.parse(localStorage.getItem(KEY));
+          if (d && d.v === 1 && typeof d === 'object') {
+            const f = defS();
+            return {
+              ...f,
+              ...d,
+              settings: { ...f.settings, ...d.settings },
+              stages: d.stages || {},
+              history: Array.isArray(d.history) ? d.history : [],
+            };
+          }
+        } catch (e) {}
+        return defS();
+      })();
+      const save = () => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(S));
+        } catch (e) {}
+      };
+      const $ = s => document.querySelector(s);
+      let scr = 'home',
+        G = null,
+        infSize = 6,
+        pend = null,
+        last = performance.now(),
+        lastO = null,
+        heroP = null,
+        flashT = 0;
+      const cache = {};
+      const IC = {
+        back: 'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z',
+        undo: 'M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z',
+        redo: 'M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z',
+        bulb: 'M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z',
+        redo2:
+          'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z',
+        pause: 'M6 19h4V5H6v14zm8-14v14h4V5h-4z',
+        play: 'M8 5v14l11-7z',
+        set: 'M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z',
+        help: 'M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z',
+        lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM9 8V6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9z',
+        err: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z',
+      };
+      const ic = k =>
+        `<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="${IC[k]}"/></svg>`;
+      const BIRD =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"><path d="M4.6 11L5.4 5.2 10 7.8z"/><path d="M19.4 11L18.6 5.2 14 7.8z"/></g><ellipse cx="12" cy="14" rx="9.4" ry="7.4" fill="currentColor"/><circle cx="8.2" cy="13.6" r="1.4" fill="var(--bg)"/><circle cx="15.8" cy="13.6" r="1.4" fill="var(--bg)"/><path d="M10.9 15.2h2.2L12 16.3z" fill="var(--bg)" stroke="var(--bg)" stroke-width=".8" stroke-linejoin="round"/><path d="M12 16.3v.8M12 17.1c-.7.8-1.7.8-2.2.2M12 17.1c.7.8 1.7.8 2.2.2" fill="none" stroke="var(--bg)" stroke-width=".8" stroke-linecap="round"/><path d="M4.2 15.4L.8 14.6M4.2 17.3L.8 18.1M19.8 15.4L23.2 14.6M19.8 17.3L23.2 18.1" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>';
+      const XM =
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+      const fmt = s => {
+        s = Math.floor(s);
+        return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      };
+      const idx = (a, r, c) => a.findIndex(p => p.row === r && p.col === c);
+      const cp = a => a.map(p => ({ row: p.row, col: p.col }));
+
+      /* ========== 테마 · 알림 ========== */
+      function applyTheme() {
+        const t = S.settings.theme,
+          d = document.documentElement,
+          res =
+            t === 'system'
+              ? matchMedia('(prefers-color-scheme:dark)').matches
+                ? 'dark'
+                : 'light'
+              : t;
+        d.dataset.theme = res;
+        d.dataset.motion = S.settings.motion === 'reduce' ? 'reduce' : 'auto';
+        document.querySelector('meta[name=theme-color]').content =
+          res === 'dark' ? '#141320' : '#fcf8ff';
+      }
+      let sbT = 0;
+      function toast(m, err) {
+        const e = $('#sb');
+        e.innerHTML = (err ? ic('err') : '') + `<span>${m}</span>`;
+        e.classList.add('on');
+        clearTimeout(sbT);
+        sbT = setTimeout(() => e.classList.remove('on'), 2800);
+      }
+      const buzz = n => {
+        if (S.settings.haptics && navigator.vibrate) navigator.vibrate(n);
+      };
+      function dlg(h) {
+        $('#dlg').innerHTML =
+          `<div class="scrim"><div class="sheet" role="dialog" aria-modal="true">${h}</div></div>`;
+        const b = $('#dlg button');
+        b && b.focus();
+      }
+      const closeDlg = () => {
+        $('#dlg').innerHTML = '';
+      };
+      const load = on => {
+        if (on)
+          dlg(
+            '<div class="spin" role="status" aria-label="퍼즐 만드는 중"></div><p style="text-align:center">퍼즐을 만들고 검증하는 중…</p>',
+          );
+        else closeDlg();
+      };
+
+      /* ========== 렌더링 ========== */
+      function boardHTML(P, o) {
+        const n = P.size,
+          B = P.board;
+        let h = `<div class="bd" style="--n:${n}" ${o.st ? '' : 'role="grid" aria-label="' + n + '×' + n + ' 퍼즐 보드"'}>`;
+        for (let r = 0; r < n; r++)
+          for (let c = 0; c < n; c++) {
+            const g = B.cells[r][c].regionId,
+              d = (a, b) => {
+                const x = B.cells[a]?.[b];
+                return x && x.regionId !== g ? 1 : 0;
+              };
+            const bird = idx(o.birds, r, c) >= 0,
+              x = !o.st && idx(o.ex, r, c) >= 0,
+              gh =
+                !o.st &&
+                o.hint &&
+                o.hint.row === r &&
+                o.hint.col === c &&
+                !bird,
+              fl = o.flash;
+            const k = [
+              'cell',
+              x ? 'x' : '',
+              gh ? 'gh' : '',
+              fl && fl.r === r && fl.c === c ? 'bad' : '',
+              fl && bird && fl.cf.some(p => p.row === r && p.col === c)
+                ? 'cf'
+                : '',
+            ].join(' ');
+            const sty = `--h:${HUES[g % 10]};--t:${d(r - 1, c)};--r:${d(r, c + 1)};--b:${d(r + 1, c)};--l:${d(r, c - 1)}`;
+            const inner = bird
+              ? `<span class="bird" style="display:contents">${BIRD}</span>`
+              : x
+                ? XM
+                : gh
+                  ? `<span class="ghost" style="display:contents">${BIRD}</span>`
+                  : '';
+            h += o.st
+              ? `<div class="${k}" style="${sty}">${inner}</div>`
+              : `<button class="${k}" style="${sty}" role="gridcell" data-r="${r}" data-c="${c}" aria-label="${r + 1}행 ${c + 1}열, ${g + 1}번 영역, ${bird ? '고양이 있음' : x ? 'X 표시' : gh ? '힌트 위치' : '비어 있음'}">${inner}</button>`;
+          }
+        return h + '</div>';
+      }
+      function render() {
+        const a = $('#app'),
+          f = document.activeElement,
+          fc =
+            f && f.dataset && f.dataset.r ? [f.dataset.r, f.dataset.c] : null;
+        let h = '';
+        if (scr === 'home') {
+          const ac = S.active,
+            done = Object.values(S.stages).filter(s => s.done).length;
+          h = `<main class="hero"><div class="bar"><span style="flex:1"></span><button class="ib" data-a="go" data-v="help" aria-label="규칙">${ic('help')}</button><button class="ib" data-a="go" data-v="set" aria-label="설정">${ic('set')}</button></div>
+    <h1>Colordoku</h1><p>색 영역마다 고양이 한 마리를 놓는 논리 퍼즐</p>
+    <div class="card">${heroP ? '<div class="mini">' + boardHTML(heroP, { st: 1, birds: heroP.solution }) + '</div>' : ''}
+    <div class="stack">${ac ? `<button class="fb" data-a="resume">이어하기 · ${ac.o.mode === 'stage' ? '스테이지 ' + (ac.o.stage + 1) : '무한 ' + ac.o.size + '×' + ac.o.size}</button>` : ''}
+    <button class="big" data-a="go" data-v="stages"><span class="dot">${STAGES.length}</span><span><b>스테이지 모드</b><small>${done}/${STAGES.length} 완료 · 5×5부터 차근차근</small></span></button>
+    <button class="big" data-a="go" data-v="inf"><span class="dot">∞</span><span><b>무한 모드</b><small>새 퍼즐을 계속 만들어요 · 5×5 ~ 10×10</small></span></button></div></div></main>`;
+        } else if (scr === 'stages') {
+          h = `<div class="bar"><button class="ib" data-a="go" data-v="home" aria-label="홈으로">${ic('back')}</button><div class="ti"><b>스테이지</b><span>앞 스테이지를 풀면 다음이 열려요</span></div></div>`;
+          [5, 6, 7, 8].forEach(n => {
+            h += `<h2>${n}×${n} · ${LBL[n]}</h2><div class="grid">`;
+            STAGES.forEach((s, i) => {
+              if (s.size !== n) return;
+              const d = S.stages[i],
+                un = i === 0 || (S.stages[i - 1] && S.stages[i - 1].done);
+              h += `<button class="st ${d && d.done ? 'done' : ''}" data-a="stage" data-v="${i}" ${un ? '' : 'disabled'} aria-label="스테이지 ${i + 1}, ${d && d.done ? '완료, 최고 ' + fmt(d.best) : un ? '플레이 가능' : '잠김'}">${un ? i + 1 : ic('lock')}<small>${d && d.done ? fmt(d.best) : un ? '도전' : '잠김'}</small></button>`;
+            });
+            h += '</div>';
+          });
+          h += `<p class="tip">현재 수록된 스테이지는 ${STAGES.length}개예요. 모두 유일해 검증된 퍼즐이에요.</p>`;
+        } else if (scr === 'inf') {
+          h = `<div class="bar"><button class="ib" data-a="go" data-v="home" aria-label="홈으로">${ic('back')}</button><div class="ti"><b>무한 모드</b><span>크기를 고르면 새 퍼즐이 만들어져요</span></div></div>
+    <div class="card"><div class="seg" role="group" aria-label="보드 크기">${SIZES.map(n => `<button data-a="size" data-v="${n}" aria-pressed="${n === infSize}">${n}×${n} ${LBL[n]}</button>`).join('')}</div>
+    <div class="row"><button class="fb" data-a="inf">${infSize}×${infSize} 시작</button></div></div>
+    <h2>최근 기록</h2>${
+      S.history.length
+        ? S.history
+            .slice(0, 6)
+            .map(
+              (x, i) =>
+                `<button class="hl" data-a="hist" data-v="${i}"><span>${x.size}×${x.size} · 같은 퍼즐 다시</span><b>${fmt(x.t)}</b></button>`,
+            )
+            .join('')
+        : '<p class="tip">아직 완료한 퍼즐이 없어요.</p>'
+    }`;
+        } else if (scr === 'help') {
+          h = `<div class="bar"><button class="ib" data-a="go" data-v="home" aria-label="홈으로">${ic('back')}</button><div class="ti"><b>규칙</b></div></div><div class="card help"><ol><li><b>행</b>마다 고양이가 정확히 한 마리</li><li><b>열</b>마다 고양이가 정확히 한 마리</li><li><b>색 영역</b>마다 고양이가 정확히 한 마리 (굵은 선이 영역 경계)</li><li>고양이끼리는 <b>가로·세로·대각선</b>으로 맞닿으면 안 돼요</li></ol>
+    <p><b>조작</b><br>한 번 탭: X 표시 켜기/끄기<br>두 번 탭: 고양이 놓기 / 고양이 치우기<br>키보드: 칸에 포커스 후 <kbd>X</kbd> 표시, <kbd>Enter</kbd>/<kbd>Space</kbd> 고양이 놓기·치우기, 방향키 이동</p>
+    <p>규칙에 어긋나는 자리는 놓을 수 없고 이유를 알려줘요. <b>힌트</b>는 정답 위치 한 곳을 점선으로 표시만 하며 고양이를 대신 놓지 않아요. X 표시는 메모일 뿐 규칙과 완성 판정에 영향이 없어요.</p></div>`;
+        } else if (scr === 'set') {
+          const t = S.settings,
+            sg = (k, arr) =>
+              `<div class="seg" role="group">${arr.map(([v, l]) => `<button data-a="setv" data-k="${k}" data-v="${v}" aria-pressed="${t[k] === v}">${l}</button>`).join('')}</div>`;
+          h = `<div class="bar"><button class="ib" data-a="go" data-v="home" aria-label="홈으로">${ic('back')}</button><div class="ti"><b>설정</b></div></div><div class="card"><div class="sw"><span>테마</span>${sg(
+            'theme',
+            [
+              ['system', '시스템'],
+              ['light', '라이트'],
+              ['dark', '다크'],
+            ],
+          )}</div>
+    <div class="sw"><span>애니메이션</span>${sg('motion', [
+      ['system', '시스템'],
+      ['reduce', '줄이기'],
+    ])}</div>
+    <div class="sw"><span>진동 (지원 기기)</span>${sg('haptics', [
+      [true, '켜기'],
+      [false, '끄기'],
+    ])}</div>
+    <div class="row"><button class="tonal" data-a="reset">저장 데이터 초기화</button></div></div><p class="tip">Colordoku ${VER} · 생성기 ${GEN}<br>진행 상황은 이 기기에만 저장돼요.</p>`;
+        } else if (scr === 'game' && G) {
+          const n = G.size,
+            U = G.hi > 0,
+            Rd = G.hi < G.hist.length - 1,
+            ok = G.status === 'playing';
+          h = `<div class="bar"><button class="ib" data-a="back" aria-label="나가기">${ic('back')}</button><div class="ti"><b>${G.mode === 'stage' ? '스테이지 ' + (G.stage + 1) : '무한 모드'}</b><span>${n}×${n} ${LBL[n]}</span></div><button class="ib" data-a="pause" aria-label="${G.paused ? '계속하기' : '일시정지'}">${ic(G.paused ? 'play' : 'pause')}</button></div>
+    <div class="chips"><span class="chip" id="tm" aria-label="경과 시간">${fmt(G.elapsed)}</span><span class="chip" aria-live="polite">고양이 ${G.birds.length}/${n}</span><span class="chip">힌트 ${G.hints}</span></div>
+    ${G.paused ? `<div class="paused"><b style="font:600 24px var(--fd)">일시정지</b><button class="fb" data-a="pause">계속하기</button></div>` : boardHTML(G.p, { birds: G.birds, ex: G.ex, hint: G.hint, flash: G.flash })}
+    <p class="tip">한 번 탭 X 표시 · 두 번 탭 고양이 놓기/치우기</p>
+    <nav class="ctl" aria-label="게임 조작"><button data-a="undo" ${U && ok ? '' : 'disabled'}>${ic('undo')}되돌리기</button><button data-a="redo" ${Rd && ok ? '' : 'disabled'}>${ic('redo')}다시</button><button class="hb" data-a="hint" ${ok && !G.paused ? '' : 'disabled'}>${ic('bulb')}힌트</button><button data-a="restart">${ic('redo2')}처음부터</button></nav>`;
+        }
+        a.innerHTML = h;
+        if (fc) {
+          const e = a.querySelector(`[data-r="${fc[0]}"][data-c="${fc[1]}"]`);
+          e && e.focus();
+        }
+      }
+
+      /* ========== 게임 로직 ========== */
+      const persist = () => {
+        if (G && G.status === 'playing') {
+          S.active = {
+            o: { mode: G.mode, size: G.size, seed: G.seed, stage: G.stage },
+            st: {
+              birds: G.birds,
+              ex: G.ex,
+              hist: G.hist,
+              hi: G.hi,
+              elapsed: G.elapsed,
+              hints: G.hints,
+              moves: G.moves,
+              hint: G.hint,
+            },
+          };
+        }
+        save();
+      };
+      const sane = (st, n) => {
+        const P = a =>
+          Array.isArray(a) &&
+          a.every(
+            p =>
+              p &&
+              Number.isInteger(p.row) &&
+              Number.isInteger(p.col) &&
+              p.row >= 0 &&
+              p.col >= 0 &&
+              p.row < n &&
+              p.col < n,
+          );
+        return (
+          st &&
+          P(st.birds) &&
+          P(st.ex) &&
+          Array.isArray(st.hist) &&
+          st.hist.length > 0 &&
+          st.hist.every(x => x && P(x.b) && P(x.e)) &&
+          Number.isInteger(st.hi) &&
+          st.hi >= 0 &&
+          st.hi < st.hist.length &&
+          isFinite(st.elapsed) &&
+          Number.isInteger(st.hints) &&
+          Number.isInteger(st.moves) &&
+          (!st.hint || P([st.hint]))
+        );
+      };
+      async function startGame(o, saved) {
+        lastO = o;
+        load(1);
+        let p = cache[o.size + o.seed];
+        if (!p) {
+          p = await generate(o.size, o.seed);
+          if (p) cache[o.size + o.seed] = p;
+        }
+        load(0);
+        if (!p) {
+          dlg(
+            '<h2>퍼즐을 만들지 못했어요</h2><p>검증된 퍼즐을 찾지 못했어요. 다시 시도해 주세요.</p><div class="act"><button class="tb" data-a="close">닫기</button><button class="fb" data-a="retry">다시 시도</button></div>',
+          );
+          return;
+        }
+        G = {
+          ...o,
+          p,
+          birds: [],
+          ex: [],
+          hist: [{ b: [], e: [] }],
+          hi: 0,
+          status: 'playing',
+          elapsed: 0,
+          hints: 0,
+          moves: 0,
+          hint: null,
+          paused: false,
+          flash: null,
+        };
+        if (saved && sane(saved, o.size)) Object.assign(G, saved);
+        last = performance.now();
+        go('game');
+        persist();
+      }
+      const newSeed = () => Math.random().toString(36).slice(2, 8);
+      function go(s) {
+        flushPend(true);
+        closeDlg();
+        scr = s;
+        if (s !== 'game') {
+          persist();
+          G = s === 'home' || s === 'stages' || s === 'inf' ? null : G;
+        }
+        render();
+        window.scrollTo(0, 0);
+      }
+      function push() {
+        G.hist = G.hist.slice(0, G.hi + 1);
+        G.hist.push({ b: cp(G.birds), e: cp(G.ex) });
+        G.hi = G.hist.length - 1;
+        persist();
+      }
+      function restore() {
+        const h = G.hist[G.hi];
+        G.birds = cp(h.b);
+        G.ex = cp(h.e);
+        persist();
+        render();
+      }
+      function single(r, c) {
+        if (!G || G.status !== 'playing' || G.paused) return;
+        if (idx(G.birds, r, c) >= 0) return;
+        const i = idx(G.ex, r, c);
+        i >= 0 ? G.ex.splice(i, 1) : G.ex.push({ row: r, col: c });
+        push();
+        render();
+      }
+      function dbl(r, c) {
+        if (!G || G.status !== 'playing' || G.paused) return;
+        const bi = idx(G.birds, r, c);
+        if (bi >= 0) {
+          G.birds.splice(bi, 1);
+          G.moves++;
+          push();
+          buzz(10);
+          render();
+          return;
+        }
+        const v = validatePlacement(G.p.board, G.birds, { row: r, col: c });
+        if (!v.valid) {
+          const M = {
+            row: '이 행에는 이미 고양이가 있어요',
+            column: '이 열에는 이미 고양이가 있어요',
+            region: '이 색 영역에는 이미 고양이가 있어요',
+            adjacency: '고양이끼리는 대각선 포함 맞닿을 수 없어요',
+            bounds: '보드 밖이에요',
+          };
+          const g = G.p.board.cells[r][c].regionId,
+            cf = G.birds.filter(
+              b =>
+                b.row === r ||
+                b.col === c ||
+                G.p.board.cells[b.row][b.col].regionId === g ||
+                adj(b, { row: r, col: c }),
+            );
+          G.flash = { r, c, cf };
+          render();
+          clearTimeout(flashT);
+          flashT = setTimeout(() => {
+            if (G) {
+              G.flash = null;
+              render();
+            }
+          }, 900);
+          toast(M[v.conflicts[0]], 1);
+          buzz([20, 40, 20]);
+          return;
+        }
+        const xi = idx(G.ex, r, c);
+        if (xi >= 0) G.ex.splice(xi, 1);
+        G.birds.push({ row: r, col: c });
+        G.moves++;
+        if (G.hint && G.hint.row === r && G.hint.col === c) G.hint = null;
+        buzz(10);
+        push();
+        if (validateSolution(G.p.board, G.birds)) finish();
+        else render();
+      }
+      function hint() {
+        if (G.status !== 'playing') return toast('이미 완성한 퍼즐이에요');
+        if (G.hint && idx(G.birds, G.hint.row, G.hint.col) < 0)
+          return toast(`표시된 힌트: ${G.hint.row + 1}행 ${G.hint.col + 1}열`);
+        const need = G.p.solution.filter(s => idx(G.birds, s.row, s.col) < 0),
+          ok = need.filter(s => validatePlacement(G.p.board, G.birds, s).valid),
+          p = (ok.length ? ok : need)[0];
+        if (!p) return;
+        G.hint = { row: p.row, col: p.col };
+        G.hints++;
+        persist();
+        render();
+        toast(`힌트: ${p.row + 1}행 ${p.col + 1}열에 고양이가 들어가요`);
+      }
+      function finish() {
+        G.status = 'completed';
+        const t = Math.round(G.elapsed);
+        if (G.mode === 'stage') {
+          const r = S.stages[G.stage] || {};
+          S.stages[G.stage] = { done: 1, best: Math.min(r.best ?? 1e9, t) };
+        } else {
+          S.history.unshift({
+            size: G.size,
+            seed: G.seed,
+            t,
+            hints: G.hints,
+            at: Date.now(),
+          });
+          S.history = S.history.slice(0, 20);
+        }
+        S.active = null;
+        save();
+        buzz([30, 50, 30]);
+        render();
+        const next = G.mode === 'stage' && G.stage + 1 < STAGES.length;
+        dlg(`<h2>완성했어요!</h2><div class="stat"><div><b>${fmt(t)}</b>시간</div><div><b>${G.moves}</b>움직임</div><div><b>${G.hints}</b>힌트</div></div>
+  <div class="act"><button class="tb" data-a="go" data-v="home">홈</button><button class="tonal" data-a="again">${G.mode === 'stage' ? '다시 하기' : '같은 퍼즐 다시'}</button>${G.mode === 'stage' ? (next ? '<button class="fb" data-a="nextS">다음 스테이지</button>' : '') : '<button class="fb" data-a="newInf">다음 퍼즐</button>'}</div>`);
+      }
+      const reset = () => {
+        G.birds = [];
+        G.ex = [];
+        G.hist = [{ b: [], e: [] }];
+        G.hi = 0;
+        G.status = 'playing';
+        G.elapsed = 0;
+        G.hints = 0;
+        G.moves = 0;
+        G.hint = null;
+        G.paused = false;
+        G.flash = null;
+        persist();
+        render();
+      };
+
+      /* ========== 제스처 (Pointer Events, 두 번 탭 280ms) ========== */
+      function flushPend(drop) {
+        if (pend) {
+          clearTimeout(pend.t);
+          const p = pend;
+          pend = null;
+          if (!drop) single(p.r, p.c);
+        }
+      }
+      function tap(r, c, x, y) {
+        if (pend) {
+          if (
+            pend.r === r &&
+            pend.c === c &&
+            Math.hypot(x - pend.x, y - pend.y) < 28
+          ) {
+            clearTimeout(pend.t);
+            pend = null;
+            dbl(r, c);
+            return;
+          }
+          flushPend();
+        }
+        pend = {
+          r,
+          c,
+          x,
+          y,
+          t: setTimeout(() => {
+            const p = pend;
+            pend = null;
+            if (p) single(p.r, p.c);
+          }, DT),
+        };
+      }
+      let pd = null;
+      const app = $('#app');
+      app.addEventListener('pointerdown', e => {
+        const b = e.target.closest('.cell[data-r]');
+        pd = b ? { b, x: e.clientX, y: e.clientY } : null;
+      });
+      app.addEventListener('pointerup', e => {
+        const b = e.target.closest('.cell[data-r]');
+        if (!pd || !b || b !== pd.b || e.button > 0) return;
+        if (Math.hypot(e.clientX - pd.x, e.clientY - pd.y) > 10) {
+          pd = null;
+          return;
+        }
+        pd = null;
+        tap(+b.dataset.r, +b.dataset.c, e.clientX, e.clientY);
+      });
+      app.addEventListener('keydown', e => {
+        const b = e.target.closest('.cell[data-r]');
+        if (!b) return;
+        const r = +b.dataset.r,
+          c = +b.dataset.c,
+          n = G.size,
+          D = {
+            ArrowUp: [-1, 0],
+            ArrowDown: [1, 0],
+            ArrowLeft: [0, -1],
+            ArrowRight: [0, 1],
+          };
+        if (D[e.key]) {
+          e.preventDefault();
+          const q = app.querySelector(
+            `[data-r="${Math.max(0, Math.min(n - 1, r + D[e.key][0]))}"][data-c="${Math.max(0, Math.min(n - 1, c + D[e.key][1]))}"]`,
+          );
+          q && q.focus();
+        } else if (e.key === 'x' || e.key === 'X') {
+          e.preventDefault();
+          flushPend();
+          single(r, c);
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          flushPend();
+          dbl(r, c);
+        }
+      });
+      app.addEventListener('click', e => {
+        if (e.target.closest('.cell[data-r]') && e.detail > 0)
+          e.preventDefault();
+      });
+
+      /* ========== 액션 ========== */
+      const A = {
+        go: v => go(v),
+        close: () => closeDlg(),
+        size: v => {
+          infSize = +v;
+          render();
+        },
+        stage: v =>
+          startGame({
+            mode: 'stage',
+            size: STAGES[v].size,
+            seed: STAGES[v].seed,
+            stage: +v,
+          }),
+        inf: () => startGame({ mode: 'inf', size: infSize, seed: newSeed() }),
+        hist: v => {
+          const x = S.history[v];
+          x && startGame({ mode: 'inf', size: x.size, seed: x.seed });
+        },
+        resume: () => S.active && startGame(S.active.o, S.active.st),
+        retry: () => lastO && startGame(lastO),
+        undo: () => {
+          if (G.hi > 0) {
+            G.hi--;
+            restore();
+          }
+        },
+        redo: () => {
+          if (G.hi < G.hist.length - 1) {
+            G.hi++;
+            restore();
+          }
+        },
+        hint,
+        pause: () => {
+          G.paused = !G.paused;
+          persist();
+          render();
+        },
+        restart: () =>
+          dlg(
+            '<h2>처음부터 다시 할까요?</h2><p>놓은 고양이와 시간이 모두 지워져요. 퍼즐은 그대로예요.</p><div class="act"><button class="tb" data-a="close">취소</button><button class="fb" data-a="doRestart">처음부터</button></div>',
+          ),
+        doRestart: () => {
+          closeDlg();
+          reset();
+        },
+        back: () => {
+          persist();
+          go('home');
+        },
+        again: () => {
+          closeDlg();
+          reset();
+        },
+        newInf: () => {
+          closeDlg();
+          startGame({ mode: 'inf', size: G.size, seed: newSeed() });
+        },
+        nextS: () => {
+          const i = G.stage + 1;
+          closeDlg();
+          startGame({
+            mode: 'stage',
+            size: STAGES[i].size,
+            seed: STAGES[i].seed,
+            stage: i,
+          });
+        },
+        setv: (v, e) => {
+          const k = e.dataset.k;
+          S.settings[k] = v === 'true' ? true : v === 'false' ? false : v;
+          save();
+          applyTheme();
+          render();
+        },
+        reset: () =>
+          dlg(
+            '<h2>데이터를 초기화할까요?</h2><p>스테이지 기록, 무한 모드 기록, 이어하기 데이터가 모두 삭제돼요.</p><div class="act"><button class="tb" data-a="close">취소</button><button class="fb" data-a="doReset">초기화</button></div>',
+          ),
+        doReset: () => {
+          S = defS();
+          save();
+          applyTheme();
+          G = null;
+          go('home');
+        },
+      };
+      document.addEventListener('click', e => {
+        const t = e.target.closest('[data-a]');
+        if (t && A[t.dataset.a]) A[t.dataset.a](t.dataset.v, t);
+      });
+
+      /* ========== 타이머 (누적 방식, 숨김 탭 제외) ========== */
+      let sv = 0;
+      setInterval(() => {
+        const n = performance.now(),
+          dt = (n - last) / 1000;
+        last = n;
+        if (
+          scr === 'game' &&
+          G &&
+          G.status === 'playing' &&
+          !G.paused &&
+          !document.hidden
+        ) {
+          G.elapsed += Math.min(dt, 2);
+          const t = $('#tm');
+          if (t) t.textContent = fmt(G.elapsed);
+          if (++sv % 10 === 0) persist();
+        }
+      }, 500);
+      document.addEventListener('visibilitychange', () => {
+        last = performance.now();
+        if (document.hidden) persist();
+      });
+      addEventListener('pagehide', persist);
+      matchMedia('(prefers-color-scheme:dark)').addEventListener(
+        'change',
+        applyTheme,
+      );
+
+      applyTheme();
+      render();
+      generate(5, 'hero').then(p => {
+        heroP = p;
+        if (scr === 'home') render();
+      });
+    </script>
+  </body>
+</html>
